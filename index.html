@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>CTLA 2025-2026 Appraisal Dashboard</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f0f2f5; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #1a202c; border-left: 5px solid #3182ce; padding-left: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #3182ce; color: white; text-align: left; padding: 12px; position: sticky; top: 0; }
+        td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        tr:hover { background: #f7fafc; }
+        .raise { color: #2f855a; font-weight: bold; }
+        .exit { color: #c53030; font-style: italic; }
+        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #cbd5e0; border-radius: 6px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Staff Appraisal & Salary Transition (2025 → 2026)</h1>
+    <input type="text" id="searchInput" class="search-box" placeholder="Search for staff name or role...">
+    
+    <table id="staffTable">
+        <thead>
+            <tr>
+                <th>Staff Name</th>
+                <th>Role</th>
+                <th>2025 Salary</th>
+                <th>2026 Salary</th>
+                <th>Appraisal Notes / Review Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>鄭又升</td><td>Design Lead</td><td>61,000</td><td>60,000</td><td>Systematic building; focus on team management. Freeze at 6.0 until attendance resolved.</td></tr>
+            <tr><td>王建升</td><td>Head Coach</td><td>64,509</td><td class="raise">66,000</td><td>Development/Recruitment Head; planning for 2-5 new headcounts.</td></tr>
+            <tr><td>顏連慶</td><td>Coach</td><td>43,760</td><td class="raise">47,760</td><td><b>Promoted to Taichung Assistant Manager in 2026.</b></td></tr>
+            <tr><td>賴仲歆</td><td>Coach</td><td>42,781</td><td class="raise">50,781</td><td>New management trial year; New Taipei event focus.</td></tr>
+            <tr><td>傅心瀅</td><td>Coach</td><td>49,492</td><td class="raise">53,492</td><td>Tainan development; Target IELTS 5.0-5.5 / TOEIC 600.</td></tr>
+            <tr><td>巫柏毅</td><td>Coach</td><td>52,333</td><td class="raise">55,813</td><td>Temporary Assistant Manager; potential KHH move.</td></tr>
+            <tr><td>林書正</td><td>Coach</td><td>55,124</td><td class="exit">0</td><td>2026 forward TBC; year-end hosting duties.</td></tr>
+            <tr><td>沈宗逸</td><td>Coach</td><td>54,338</td><td class="exit">0</td><td>Probational warning Jan-June 2026; long-term exit 2028.</td></tr>
+            <tr><td>胡育鴻</td><td>Coach</td><td>48,038</td><td>47,500</td><td>Leaving June 2026 after U16 coordination.</td></tr>
+            <tr><td>黃雅欣</td><td>Coach</td><td>45,790</td><td>45,790</td><td>Leaving July 2026; event administration focus.</td></tr>
+            <tr><td>朱佑婍</td><td>Intern</td><td>22,576</td><td class="raise">32,076</td><td>Full-time transition; U16 exchange and receipt systems.</td></tr>
+            <tr><td>林煜霖</td><td>Intern</td><td>21,228</td><td class="raise">30,728</td><td>Successful transition to full-time staff.</td></tr>
+            <tr><td>李文翰</td><td>Intern</td><td>23,236</td><td class="raise">32,736</td><td>Successful transition to full-time staff.</td></tr>
+            </tbody>
+    </table>
+</div>
+
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let filter = this.value.toUpperCase();
+        let tr = document.getElementById('staffTable').getElementsByTagName('tr');
+        for (let i = 1; i < tr.length; i++) {
+            tr[i].style.display = tr[i].innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+        }
+    });
+</script>
+
+</body>
+</html>
