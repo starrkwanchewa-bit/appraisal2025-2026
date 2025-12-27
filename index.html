@@ -2,60 +2,126 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>CTLA 2025-2026 Appraisal Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTLA 2025-2026 員工考核彙整</title>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f0f2f5; padding: 20px; }
-        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #1a202c; border-left: 5px solid #3182ce; padding-left: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background: #3182ce; color: white; text-align: left; padding: 12px; position: sticky; top: 0; }
-        td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
-        tr:hover { background: #f7fafc; }
-        .raise { color: #2f855a; font-weight: bold; }
-        .exit { color: #c53030; font-style: italic; }
-        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #cbd5e0; border-radius: 6px; }
+        :root {
+            --primary: #1a365d;
+            --accent: #2b6cb0;
+            --success: #2f855a;
+            --warning: #c05621;
+            --danger: #c53030;
+            --bg: #f8fafc;
+        }
+
+        body { font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #2d3748; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 20px; margin-bottom: 20px; }
+        h1 { margin: 0; font-size: 1.8rem; color: var(--primary); }
+
+        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: #ebf4ff; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #bee3f8; }
+        .stat-card span { display: block; font-size: 0.9rem; color: #4a5568; margin-bottom: 5px; }
+        .stat-card b { font-size: 1.4rem; color: var(--accent); }
+
+        .search-box { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 20px; font-size: 1rem; box-sizing: border-box; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--primary); color: white; text-align: left; padding: 15px; position: sticky; top: 0; }
+        td { padding: 15px; border-bottom: 1px solid #edf2f7; vertical-align: top; line-height: 1.6; }
+        tr:nth-child(even) { background: #fdfdfd; }
+        tr:hover { background: #f0f7ff; }
+
+        .name-cell { font-weight: bold; font-size: 1.05rem; color: #1a202c; }
+        .dept-tag { font-size: 0.75rem; padding: 2px 8px; background: #edf2f7; border-radius: 4px; color: #4a5568; margin-left: 8px; vertical-align: middle; }
+        .salary { font-family: Consolas, monospace; font-weight: bold; }
+        .up { color: var(--success); }
+        .down { color: var(--danger); }
+        
+        .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-top: 5px; display: inline-block; }
+        .promo { background: #c6f6d5; color: #22543d; }
+        .exit { background: #fed7d7; color: #822727; }
+        .probation { background: #feebc8; color: #744210; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Staff Appraisal & Salary Transition (2025 → 2026)</h1>
-    <input type="text" id="searchInput" class="search-box" placeholder="Search for staff name or role...">
-    
+<div class="container">
+    <header>
+        <h1>CTLA 2025-2026 年度員工考核與調薪彙整</h1>
+        <div style="text-align: right;">
+            <p style="margin:0; font-weight:bold; color:var(--danger);">機密文件 - 僅供管理層參閱</p>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat-card"><span>總員工人數</span><b>33 名</b></div>
+        <div class="stat-card"><span>職務晉升/轉正</span><b>8 名</b></div>
+        <div class="stat-card"><span>2026 預計離職</span><b>3 名</b></div>
+        <div class="stat-card"><span>薪資凍結/觀察</span><b>2 名</b></div>
+    </div>
+
+    <input type="text" id="staffSearch" class="search-box" placeholder="輸入姓名、職位或地區進行關鍵字搜尋 (例如: '教練', '台南', '晉升')...">
+
     <table id="staffTable">
         <thead>
             <tr>
-                <th>Staff Name</th>
-                <th>Role</th>
-                <th>2025 Salary</th>
-                <th>2026 Salary</th>
-                <th>Appraisal Notes / Review Points</th>
+                <th width="15%">姓名/職稱</th>
+                <th width="10%">2025 薪資</th>
+                <th width="10%">2026 薪資</th>
+                <th width="10%">調幅</th>
+                <th>考核摘要與 2026 發展重點</th>
             </tr>
         </thead>
         <tbody>
-            <tr><td>鄭又升</td><td>Design Lead</td><td>61,000</td><td>60,000</td><td>Systematic building; focus on team management. Freeze at 6.0 until attendance resolved.</td></tr>
-            <tr><td>王建升</td><td>Head Coach</td><td>64,509</td><td class="raise">66,000</td><td>Development/Recruitment Head; planning for 2-5 new headcounts.</td></tr>
-            <tr><td>顏連慶</td><td>Coach</td><td>43,760</td><td class="raise">47,760</td><td><b>Promoted to Taichung Assistant Manager in 2026.</b></td></tr>
-            <tr><td>賴仲歆</td><td>Coach</td><td>42,781</td><td class="raise">50,781</td><td>New management trial year; New Taipei event focus.</td></tr>
-            <tr><td>傅心瀅</td><td>Coach</td><td>49,492</td><td class="raise">53,492</td><td>Tainan development; Target IELTS 5.0-5.5 / TOEIC 600.</td></tr>
-            <tr><td>巫柏毅</td><td>Coach</td><td>52,333</td><td class="raise">55,813</td><td>Temporary Assistant Manager; potential KHH move.</td></tr>
-            <tr><td>林書正</td><td>Coach</td><td>55,124</td><td class="exit">0</td><td>2026 forward TBC; year-end hosting duties.</td></tr>
-            <tr><td>沈宗逸</td><td>Coach</td><td>54,338</td><td class="exit">0</td><td>Probational warning Jan-June 2026; long-term exit 2028.</td></tr>
-            <tr><td>胡育鴻</td><td>Coach</td><td>48,038</td><td>47,500</td><td>Leaving June 2026 after U16 coordination.</td></tr>
-            <tr><td>黃雅欣</td><td>Coach</td><td>45,790</td><td>45,790</td><td>Leaving July 2026; event administration focus.</td></tr>
-            <tr><td>朱佑婍</td><td>Intern</td><td>22,576</td><td class="raise">32,076</td><td>Full-time transition; U16 exchange and receipt systems.</td></tr>
-            <tr><td>林煜霖</td><td>Intern</td><td>21,228</td><td class="raise">30,728</td><td>Successful transition to full-time staff.</td></tr>
-            <tr><td>李文翰</td><td>Intern</td><td>23,236</td><td class="raise">32,736</td><td>Successful transition to full-time staff.</td></tr>
-            </tbody>
+            <tr><td><span class="name-cell">鄭又升</span><span class="dept-tag">設計組長</span></td><td class="salary">61,000</td><td class="salary">60,000</td><td class="down">-1,000</td><td>包裹化薪資整合。重點在於團隊管理與系統建立。因出勤問題，薪資凍結至 6.0 改善為止。</td></tr>
+            <tr><td><span class="name-cell">曹佩均</span><span class="dept-tag">行政</span></td><td class="salary">66,500</td><td class="salary">66,500</td><td>-</td><td>維持穩定。負責績效考核系統的落實與執行。</td></tr>
+            <tr><td><span class="name-cell">王建升</span><span class="dept-tag">總教練</span></td><td class="salary">64,509</td><td class="salary">66,000</td><td class="up">+1,491</td><td>負責開發與招募。預計 2026 年新增 2-5 名人力編制。</td></tr>
+            <tr><td><span class="name-cell">楊宗恆</span><span class="dept-tag">募款</span></td><td class="salary">55,000</td><td class="salary">58,000</td><td class="up">+3,000</td><td>專注於募款活動與年會管理。</td></tr>
+            <tr><td><span class="name-cell">蔡直機</span><span class="dept-tag">正職</span></td><td class="salary">53,000</td><td class="salary">53,000</td><td>-</td><td>規劃 2026 後期任務交接，將女子組翻譯及 Road to WC 事務移交 Sarah。</td></tr>
+            <tr><td><span class="name-cell">許靜懿</span><span class="dept-tag">財務經理</span></td><td class="salary">53,500</td><td class="salary">53,500</td><td>-</td><td>財務部門管理，維持穩定運作。</td></tr>
+            <tr><td><span class="name-cell">吳敏銓</span><span class="dept-tag">正職</span></td><td class="salary">48,000</td><td class="salary">51,000</td><td class="up">+3,000</td><td>預計 3 月底請陪產假，期間年會任務由 Sarah 代理。</td></tr>
+            <tr><td><span class="name-cell">馮彣祺</span><span class="dept-tag">SNC</span></td><td class="salary">44,000</td><td class="salary">40,000</td><td class="down">-4,000</td><td>啟動「工作與進修平衡」計畫，重心轉向學業。</td></tr>
+            <tr><td><span class="name-cell">郭芷伶</span><span class="dept-tag">國家隊</span></td><td class="salary">46,000</td><td class="salary">49,000</td><td class="up">+3,000</td><td>負責國家隊控管。2026 年將日文課轉為英文課，提升國際對接。</td></tr>
+            <tr><td><span class="name-cell">林柚蓁</span><span class="dept-tag">行政</span></td><td class="salary">40,000</td><td class="salary">42,000</td><td class="up">+2,000</td><td>工作量重新分配，專注於健康輔助與行政支持。</td></tr>
+            <tr><td><span class="name-cell">楊宜蘭</span><span class="dept-tag">會計</span></td><td class="salary">37,000</td><td class="salary">38,500</td><td class="up">+1,500</td><td>處理出納問題。長期目標調整至 40,000 元。</td></tr>
+            <tr><td><span class="name-cell">楊景婷</span><span class="dept-tag">正職</span></td><td class="salary">42,000</td><td class="salary">42,000</td><td>-</td><td>試用期滿調薪完成 (自 3 月起)。</td></tr>
+            <tr><td><span class="name-cell">許晉豪</span><span class="dept-tag">正職</span></td><td class="salary">27,108</td><td class="salary">30,108</td><td class="up">+3,000</td><td>2027 年 6 月畢業，畢業後起薪預計為 32,000 元。</td></tr>
+            <tr><td><span class="name-cell">覃瑜</span><span class="dept-tag">兼職</span></td><td class="salary">22,000</td><td class="salary">22,000</td><td>-</td><td>外籍居留證許可需於 1 月更新。</td></tr>
+
+            <tr><td><span class="name-cell">顏連慶</span><br><span class="badge promo">晉升副理</span></td><td class="salary">43,760</td><td class="salary">47,760</td><td class="up">+4,000</td><td><b>2026 年晉升台中辦公室助理經理 (副理)。</b></td></tr>
+            <tr><td><span class="name-cell">賴仲歆</span><br><span class="badge promo">管理培訓</span></td><td class="salary">42,781</td><td class="salary">50,781</td><td class="up">+8,000</td><td>管理職試用年。專注於新北市活動拓展。</td></tr>
+            <tr><td><span class="name-cell">巫柏毅</span><span class="dept-tag">助理經理</span></td><td class="salary">52,333</td><td class="salary">55,813</td><td class="up">+3,480</td><td>暫代助理經理職務。若有職缺，潛在調動至高雄。</td></tr>
+            <tr><td><span class="name-cell">張威元</span><span class="dept-tag">賽事總監</span></td><td class="salary">54,300</td><td class="salary">56,800</td><td class="up">+2,500</td><td>2026 賽事總監。負責種子計畫演進及管理職培訓。</td></tr>
+            <tr><td><span class="name-cell">傅心瀅</span><span class="dept-tag">教練</span></td><td class="salary">49,492</td><td class="salary">53,492</td><td class="up">+4,000</td><td>台南地區發展。設定英文目標 (IELTS 5.0-5.5 / TOEIC 600)。</td></tr>
+            <tr><td><span class="name-cell">林怡萱</span><span class="dept-tag">教練</span></td><td class="salary">49,948</td><td class="salary">51,948</td><td class="up">+2,000</td><td>花蓮地區發展。預計 2027 年回鄉工作並辦理離職。</td></tr>
+            <tr><td><span class="name-cell">胡育鴻</span><br><span class="badge exit">6月離職</span></td><td class="salary">48,038</td><td class="salary">47,500</td><td class="down">-538</td><td>預計 2026 年 6 月離職。完成 U16 協調與年度活動後交接。</td></tr>
+            <tr><td><span class="name-cell">黃雅欣</span><br><span class="badge exit">7月離職</span></td><td class="salary">45,790</td><td class="salary">45,790</td><td>-</td><td>預計 2026 年 7 月離職。專注於賽事行政交接。</td></tr>
+            <tr><td><span class="name-cell">林書正</span><span class="dept-tag">教練</span></td><td class="salary">55,124</td><td class="salary">0</td><td class="down">-100%</td><td>2026 年職位待定。負責年底主辦活動任務。</td></tr>
+            <tr><td><span class="name-cell">沈宗逸</span><br><span class="badge probation">觀察期</span></td><td class="salary">54,338</td><td class="salary">0</td><td class="down">-100%</td><td>1-6 月為績效改善觀察期。預計 2028 年離職計畫。</td></tr>
+            <tr><td><span class="name-cell">林芷誼</span><span class="dept-tag">業務/銷售</span></td><td class="salary">36,040</td><td class="salary">38,040</td><td class="up">+2,000</td><td>負責採購與創意生成。預計 2027 年離職計畫。</td></tr>
+            <tr><td><span class="name-cell">林誌豪</span><span class="dept-tag">教練</span></td><td class="salary">36,668</td><td class="salary">37,168</td><td class="up">+500</td><td>接手種子計畫與地區事務。1-5 月服兵役。</td></tr>
+
+            <tr><td><span class="name-cell">朱佑婍</span><br><span class="badge promo">實習轉正</span></td><td class="salary">22,576</td><td class="salary">32,076</td><td class="up">+9,500</td><td>正式轉正。專注於 U16 交流與單據系統建立。</td></tr>
+            <tr><td><span class="name-cell">林煜霖</span><br><span class="badge promo">實習轉正</span></td><td class="salary">21,228</td><td class="salary">30,728</td><td class="up">+9,500</td><td>實習結束順利轉任正職人員。</td></tr>
+            <tr><td><span class="name-cell">李文翰</span><br><span class="badge promo">實習轉正</span></td><td class="salary">23,236</td><td class="salary">32,736</td><td class="up">+9,500</td><td>實習結束順利轉任正職人員。</td></tr>
+            <tr><td><span class="name-cell">張泰偉</span><span class="dept-tag">實習生</span></td><td class="salary">23,062</td><td class="salary">31,663</td><td class="up">+8,601</td><td>畢業後預計在台北尋求正職機會。</td></tr>
+            
+            <tr><td><span class="name-cell">李瑞克</span><span class="dept-tag">合約</span></td><td class="salary">41,700</td><td class="salary">41,700</td><td>-</td><td>需明確角色以領導地區委員會。</td></tr>
+            <tr><td><span class="name-cell">江奉軒</span><span class="dept-tag">顧問</span></td><td class="salary">30,000</td><td class="salary">0</td><td class="down">-30,000</td><td>2026 年解約。轉為專案制外部顧問。</td></tr>
+        </tbody>
     </table>
 </div>
 
 <script>
-    document.getElementById('searchInput').addEventListener('keyup', function() {
+    document.getElementById('staffSearch').addEventListener('keyup', function() {
         let filter = this.value.toUpperCase();
-        let tr = document.getElementById('staffTable').getElementsByTagName('tr');
-        for (let i = 1; i < tr.length; i++) {
-            tr[i].style.display = tr[i].innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+        let rows = document.querySelector("#staffTable tbody").rows;
+        
+        for (let i = 0; i < rows.length; i++) {
+            let text = rows[i].textContent.toUpperCase();
+            rows[i].style.display = text.indexOf(filter) > -1 ? "" : "none";
         }
     });
 </script>
